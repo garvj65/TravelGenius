@@ -1,5 +1,6 @@
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
+import JourneySection from "../components/JourneySection";
 import Testimonials from "../components/Testimonials";
 import TripFeatures from "../components/TripFeatures";
 import { SignInButton, SignUpButton, useAuth } from "@clerk/clerk-react";
@@ -31,6 +32,7 @@ export default function HomePage() {
       <TripFeatures />
       {/* Add other sections like AI-powered trip, footer, etc., here */}
       <Testimonials />
+      <JourneySection />
       <Footer />
     </div>
   );
