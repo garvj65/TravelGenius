@@ -1,10 +1,12 @@
 import Header from "./Header";
 import React, { useState } from "react";
+import VideoModal from "./VideoModal";
 import { useParams } from "react-router-dom";
 
 export default function JourneyDetail() {
   const { journeyId } = useParams();
   const [activeDay, setActiveDay] = useState(1);
+  const [activeVideo, setActiveVideo] = useState(null);
 
   const journeyData = {
     'trip-to-tokyo': {
@@ -199,7 +201,7 @@ export default function JourneyDetail() {
           description: 'A luxury collection hotel offering a great mix of comfort and convenience.',
           rating: 4.8,
           image: '/images/hotels/tokyo-prince.jpg',
-          bookingLink: '#'
+          bookingLink: 'https://www.booking.com/hotel/jp/the-prince-gallery-tokyo-kioicho-a-luxury-collection.html'
         },
         {
           name: 'The Capitol Hotel Tokyu',
@@ -222,12 +224,12 @@ export default function JourneyDetail() {
         {
           title: "Tokyo Travel Guide - Must-See Attractions",
           thumbnail: "/images/videos/tokyo-guide.jpg",
-          url: "#"
+          url: "https://www.youtube.com/embed/hLlpWqT5G8k"
         },
         {
           title: "Top 10 Things to Do in Tokyo",
           thumbnail: "/images/videos/tokyo-things.jpg",
-          url: "#"
+          url: "https://www.youtube.com/embed/0nTO4zqEpw8"
         }
       ]
     },
@@ -463,6 +465,8 @@ export default function JourneyDetail() {
                 </p>
                 <a
                   href={hotel.bookingLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors duration-300"
                 >
                   Book Now
@@ -502,9 +506,9 @@ export default function JourneyDetail() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {cityData.videos.map((video, index) => (
-            <a
+            <button
               key={index}
-              href={video.url}
+              onClick={() => setActiveVideo(video.url)}
               className="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
             >
               <img 
@@ -517,10 +521,18 @@ export default function JourneyDetail() {
                   {video.title}
                 </h3>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </section>
+
+      {/* Video Modal */}
+      {activeVideo && (
+        <VideoModal
+          videoUrl={activeVideo}
+          onClose={() => setActiveVideo(null)}
+        />
+      )}
     </div>
   );
 }
