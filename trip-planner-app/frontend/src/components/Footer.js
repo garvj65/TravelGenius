@@ -2,61 +2,53 @@ import React from "react";
 
 // src/components/Footer.js
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-8">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between">
+    <footer className="bg-gray-800 dark:bg-gray-950 text-gray-300 py-8 transition-all duration-300 ease-in-out">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h4 className="text-lg font-bold mb-4">TripPlanner AI</h4>
-            <p>Your next journey, optimized.</p>
+            <h3 className="text-white text-lg font-bold mb-4 transition-colors duration-300">
+              TravelGenius
+            </h3>
+            <p className="text-gray-400 dark:text-gray-500 transition-colors duration-300">
+              Your AI-powered travel companion
+            </p>
           </div>
           <div>
-            <h4 className="text-lg font-bold mb-4">Quick Links</h4>
-            <ul>
-              <li className="mb-2">
-                <a href="/" className="hover:underline">
-                  Home
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="/dashboard" className="hover:underline">
-                  Dashboard
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="/about" className="hover:underline">
-                  About
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="/contact" className="hover:underline">
-                  Contact
-                </a>
-              </li>
-            </ul>
+            <h4 className="text-white text-lg font-bold mb-4 transition-colors duration-300">
+              Quick Links
+            </h4>
+            <div className="space-y-2">
+              <button className="block text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
+                About Us
+              </button>
+              <button className="block text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
+                Contact
+              </button>
+              <button className="block text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
+                Privacy Policy
+              </button>
+            </div>
           </div>
           <div>
-            <h4 className="text-lg font-bold mb-4">Follow Us</h4>
+            <h4 className="text-white text-lg font-bold mb-4 transition-colors duration-300">
+              Follow Us
+            </h4>
             <div className="flex space-x-4">
-              <button className="hover:text-white">
+              <button className="text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
                 <i className="fab fa-facebook"></i>
               </button>
-              <button className="hover:text-white">
+              <button className="text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
                 <i className="fab fa-twitter"></i>
               </button>
-              <button className="hover:text-white">
+              <button className="text-gray-400 dark:text-gray-500 hover:text-white transition-all duration-300">
                 <i className="fab fa-instagram"></i>
               </button>
             </div>
           </div>
         </div>
-        <div className="text-center mt-8">
-          <p className="text-sm">&copy; 2024 TripPlanner AI. All rights reserved.</p>
-        </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

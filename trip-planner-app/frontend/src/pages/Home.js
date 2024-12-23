@@ -1,38 +1,16 @@
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import JourneySection from "../components/JourneySection";
-import Testimonials from "../components/Testimonials";
 import TripFeatures from "../components/TripFeatures";
-import { SignInButton, SignUpButton, useAuth } from "@clerk/clerk-react";
-import { Link } from "react-router-dom";
 
 export default function HomePage() {
-  const { isSignedIn } = useAuth();
-
   return (
-    <div>
-      <header className="w-full bg-white p-5 shadow-md flex justify-between items-center">
-        <h1 className="text-2xl font-bold">TravelGenius</h1>
-        <nav>
-          {!isSignedIn ? (
-            <>
-              <SignInButton mode="modal">
-                <button className="mr-5 text-blue-500 hover:underline">Sign In</button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="text-green-500 hover:underline">Sign Up</button>
-              </SignUpButton>
-            </>
-          ) : (
-            <Link to="/dashboard" className="text-green-500 hover:underline">Dashboard</Link>
-          )}
-        </nav>
-      </header>
-      <HeroSection />
-      <TripFeatures />
-      {/* Add other sections like AI-powered trip, footer, etc., here */}
-      <Testimonials />
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+      <Header />
+      <HeroSection className="p-5 pb-10"/>
       <JourneySection />
+      <TripFeatures />
       <Footer />
     </div>
   );
