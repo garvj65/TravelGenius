@@ -14,10 +14,9 @@ export default function VideoModal({ videoUrl, onClose }) {
        </button>
        <div className="relative pt-[56.25%]">
          <iframe
-           className="absolute inset-0 w-full h-full"
+           className="absolute inset-0 w-full h-full border-0"
            src={videoUrl}
            title="Video player"
-           frameBorder="0"
            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
            allowFullScreen
          ></iframe>
