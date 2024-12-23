@@ -189,6 +189,57 @@ export default function JourneyDetail() {
     }
   };
 
+  const accommodationData = {
+    'trip-to-tokyo': {
+      cityName: 'Tokyo',
+      hotels: [
+        {
+          name: 'The Prince Gallery Tokyo Kioicho',
+          type: 'Luxury',
+          description: 'A luxury collection hotel offering a great mix of comfort and convenience.',
+          rating: 4.8,
+          image: '/images/hotels/tokyo-prince.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'The Capitol Hotel Tokyu',
+          type: 'Premium',
+          description: 'Featuring premium amenities and exceptional service.',
+          rating: 4.6,
+          image: '/images/hotels/tokyo-capitol.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Wise Owl Hostels River Tokyo',
+          type: 'Budget',
+          description: 'Providing basic comforts without breaking the bank.',
+          rating: 4.3,
+          image: '/images/hotels/tokyo-hostel.jpg',
+          bookingLink: '#'
+        }
+      ],
+      videos: [
+        {
+          title: "Tokyo Travel Guide - Must-See Attractions",
+          thumbnail: "/images/videos/tokyo-guide.jpg",
+          url: "#"
+        },
+        {
+          title: "Top 10 Things to Do in Tokyo",
+          thumbnail: "/images/videos/tokyo-things.jpg",
+          url: "#"
+        }
+      ]
+    },
+    // ... similar data for other cities ...
+  };
+
+  const cityData = accommodationData[journeyId] || {
+    cityName: '',
+    hotels: [],
+    videos: []
+  };
+
   const itinerary = journeyData[journeyId] || {
     id: journeyId,
     title: 'Journey Not Found',
@@ -259,6 +310,95 @@ export default function JourneyDetail() {
             </div>
           ))}
       </div>
+
+      {/* Where to Stay Section */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+          Where to stay in {cityData.cityName}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {cityData.hotels.map((hotel, index) => (
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+              <img 
+                src={hotel.image} 
+                alt={hotel.name} 
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <div className="flex items-center mb-2">
+                  <span className="bg-green-500 text-white px-2 py-1 rounded text-sm">
+                    {hotel.rating} ★
+                  </span>
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    {hotel.type}
+                  </span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+                  {hotel.name}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  {hotel.description}
+                </p>
+                <a
+                  href={hotel.bookingLink}
+                  className="block text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors duration-300"
+                >
+                  Book Now
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Booking.com Widget Section */}
+      <section className="bg-white dark:bg-gray-800 py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <img src="/images/booking-logo.png" alt="Booking.com" className="h-8" />
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                Find the right stay during your trip.
+              </p>
+            </div>
+            <a
+              href={`https://booking.com/searchresults.html?city=${cityData.cityName}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
+            >
+              Find amazing hotels
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Travel Videos Section */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+          Top {cityData.cityName} Travel Videos
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {cityData.videos.map((video, index) => (
+            <a
+              key={index}
+              href={video.url}
+              className="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
+            >
+              <img 
+                src={video.thumbnail} 
+                alt={video.title} 
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {video.title}
+                </h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
