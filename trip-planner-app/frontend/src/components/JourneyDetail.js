@@ -231,7 +231,129 @@ export default function JourneyDetail() {
         }
       ]
     },
-    // ... similar data for other cities ...
+    'trip-to-dubai': {
+      cityName: 'Dubai',
+      hotels: [
+        {
+          name: 'Burj Al Arab Jumeirah',
+          type: 'Ultra Luxury',
+          description: 'Iconic sail-shaped hotel offering unparalleled luxury and service.',
+          rating: 4.9,
+          image: '/images/hotels/dubai-burj.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Atlantis The Palm',
+          type: 'Luxury',
+          description: 'Ocean-themed resort with water park and marine attractions.',
+          rating: 4.7,
+          image: '/images/hotels/dubai-atlantis.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Rove Downtown Dubai',
+          type: 'Mid-Range',
+          description: 'Modern hotel with great location and value for money.',
+          rating: 4.4,
+          image: '/images/hotels/dubai-rove.jpg',
+          bookingLink: '#'
+        }
+      ],
+      videos: [
+        {
+          title: "Dubai City Tour - Top Attractions",
+          thumbnail: "/images/videos/dubai-guide.jpg",
+          url: "#"
+        },
+        {
+          title: "Dubai Desert Safari Experience",
+          thumbnail: "/images/videos/dubai-desert.jpg",
+          url: "#"
+        }
+      ]
+    },
+    'trip-to-new-york': {
+      cityName: 'New York',
+      hotels: [
+        {
+          name: 'The Ritz-Carlton New York',
+          type: 'Luxury',
+          description: 'Elegant hotel offering stunning views of Central Park.',
+          rating: 4.8,
+          image: '/images/hotels/nyc-ritz.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'The Standard High Line',
+          type: 'Boutique',
+          description: 'Trendy hotel overlooking the High Line with amazing views.',
+          rating: 4.5,
+          image: '/images/hotels/nyc-standard.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Pod 51 Hotel',
+          type: 'Budget',
+          description: 'Compact, modern rooms in a great Midtown location.',
+          rating: 4.2,
+          image: '/images/hotels/nyc-pod.jpg',
+          bookingLink: '#'
+        }
+      ],
+      videos: [
+        {
+          title: "New York City Travel Guide",
+          thumbnail: "/images/videos/nyc-guide.jpg",
+          url: "#"
+        },
+        {
+          title: "Hidden Gems of NYC",
+          thumbnail: "/images/videos/nyc-hidden.jpg",
+          url: "#"
+        }
+      ]
+    },
+    'trip-to-rome': {
+      cityName: 'Rome',
+      hotels: [
+        {
+          name: 'Hotel de Russie',
+          type: 'Luxury',
+          description: 'Luxury hotel with beautiful gardens near Spanish Steps.',
+          rating: 4.8,
+          image: '/images/hotels/rome-russie.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Hotel Artemide',
+          type: 'Premium',
+          description: 'Elegant hotel on historic Via Nazionale.',
+          rating: 4.7,
+          image: '/images/hotels/rome-artemide.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Generator Rome',
+          type: 'Budget',
+          description: 'Stylish hostel near Termini Station.',
+          rating: 4.3,
+          image: '/images/hotels/rome-generator.jpg',
+          bookingLink: '#'
+        }
+      ],
+      videos: [
+        {
+          title: "Rome's Ancient Wonders",
+          thumbnail: "/images/videos/rome-ancient.jpg",
+          url: "#"
+        },
+        {
+          title: "Food Tour of Rome",
+          thumbnail: "/images/videos/rome-food.jpg",
+          url: "#"
+        }
+      ]
+    }
   };
 
   const cityData = accommodationData[journeyId] || {
