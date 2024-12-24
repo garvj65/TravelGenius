@@ -9,10 +9,11 @@ export default function JourneyDetail() {
   const [activeVideo, setActiveVideo] = useState(null);
 
   const journeyData = {
-    'trip-to-tokyo': {
-      id: 'trip-to-tokyo',
-      title: 'TRIP TO TOKYO',
-      lastUpdated: "2024 Oct 04",
+    'tokyo-adventure-march': {
+      id: 'tokyo-adventure-march',
+      cityName: 'Tokyo',
+      title: 'Tokyo Adventure',
+      lastUpdated: "2024 Mar 15",
       image: "/images/tokyo.jpg",
       days: [
         {
@@ -21,18 +22,13 @@ export default function JourneyDetail() {
           activities: [
             {
               time: "Morning",
-              title: "Tokyo Metropolitan Government Building",
-              description: "Start your day with a free panoramic view of Tokyo from the observation deck. On clear days, you might even see Mount Fuji!"
+              title: "Tokyo Metropolitan Building",
+              description: "Start your day with free panoramic views of Tokyo."
             },
             {
               time: "Afternoon",
-              title: "Shinjuku Gyoen National Garden",
-              description: "Explore one of Tokyo's largest parks, featuring Japanese, English, and French gardens. Perfect for a peaceful afternoon stroll."
-            },
-            {
-              time: "Evening",
-              title: "Omoide Yokocho",
-              description: "Experience the nostalgic atmosphere of old Tokyo in these narrow alleyways filled with tiny restaurants and bars."
+              title: "Shinjuku Gyoen",
+              description: "Explore one of Tokyo's largest and most beautiful parks."
             }
           ]
         },
@@ -52,10 +48,49 @@ export default function JourneyDetail() {
             }
           ]
         }
+      ],
+      hotels: [
+        {
+          name: 'The Prince Gallery Tokyo Kioicho',
+          type: 'Luxury',
+          description: 'A luxury collection hotel offering a great mix of comfort and convenience.',
+          rating: 4.8,
+          image: '/images/hotels/tokyo-prince.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'The Capitol Hotel Tokyu',
+          type: 'Premium',
+          description: 'Featuring premium amenities and exceptional service.',
+          rating: 4.6,
+          image: '/images/hotels/tokyo-capitol.jpg',
+          bookingLink: '#'
+        },
+        {
+          name: 'Wise Owl Hostels River Tokyo',
+          type: 'Budget',
+          description: 'Providing basic comforts without breaking the bank.',
+          rating: 4.3,
+          image: '/images/hotels/tokyo-hostel.jpg',
+          bookingLink: '#'
+        }
+      ],
+      videos: [
+        {
+          title: "Tokyo Travel Guide - Must-See Attractions",
+          thumbnail: "/images/videos/tokyo-guide.jpg",
+          url: "https://www.youtube.com/embed/hLlpWqT5G8k"
+        },
+        {
+          title: "Top 10 Things to Do in Tokyo",
+          thumbnail: "/images/videos/tokyo-things.jpg",
+          url: "https://www.youtube.com/embed/0nTO4zqEpw8"
+        }
       ]
     },
     'trip-to-dubai': {
       id: 'trip-to-dubai',
+      cityName: 'Dubai',
       title: 'TRIP TO DUBAI',
       lastUpdated: "2024 Oct 04",
       image: "/images/dubai.jpg",
@@ -97,144 +132,7 @@ export default function JourneyDetail() {
             }
           ]
         }
-      ]
-    },
-    'trip-to-new-york': {
-      id: 'trip-to-new-york',
-      title: 'TRIP TO NEW YORK',
-      lastUpdated: "2024 Oct 04",
-      image: "/images/newyork.jpg",
-      days: [
-        {
-          day: 1,
-          location: "Manhattan",
-          activities: [
-            {
-              time: "Morning",
-              title: "Central Park",
-              description: "Start with a morning walk through Central Park, visiting Bethesda Fountain and Belvedere Castle."
-            },
-            {
-              time: "Afternoon",
-              title: "Metropolitan Museum of Art",
-              description: "Explore one of the world's largest art museums, featuring over 2 million works."
-            },
-            {
-              time: "Evening",
-              title: "Times Square",
-              description: "Experience the bright lights and energy of Times Square at night."
-            }
-          ]
-        },
-        {
-          day: 2,
-          location: "Lower Manhattan",
-          activities: [
-            {
-              time: "Morning",
-              title: "Statue of Liberty & Ellis Island",
-              description: "Take a ferry to visit these iconic landmarks and learn about immigration history."
-            },
-            {
-              time: "Afternoon",
-              title: "9/11 Memorial & Museum",
-              description: "Pay respects and learn about the events of September 11, 2001."
-            }
-          ]
-        }
-      ]
-    },
-    'trip-to-rome': {
-      id: 'trip-to-rome',
-      title: 'TRIP TO ROME',
-      lastUpdated: "2024 Oct 04",
-      image: "/images/rome.jpg",
-      days: [
-        {
-          day: 1,
-          location: "Ancient Rome",
-          activities: [
-            {
-              time: "Morning",
-              title: "Colosseum",
-              description: "Begin your Roman adventure at this iconic amphitheater, exploring its ancient history."
-            },
-            {
-              time: "Afternoon",
-              title: "Roman Forum",
-              description: "Walk through the heart of ancient Rome, seeing ruins of important government buildings."
-            },
-            {
-              time: "Evening",
-              title: "Palatine Hill",
-              description: "Explore the birthplace of Rome and enjoy sunset views over the city."
-            }
-          ]
-        },
-        {
-          day: 2,
-          location: "Vatican City",
-          activities: [
-            {
-              time: "Morning",
-              title: "Vatican Museums",
-              description: "Tour the vast museums, including the stunning Sistine Chapel."
-            },
-            {
-              time: "Afternoon",
-              title: "St. Peter's Basilica",
-              description: "Visit the world's largest church and climb to the dome for panoramic views."
-            }
-          ]
-        }
-      ]
-    }
-  };
-
-  const accommodationData = {
-    'trip-to-tokyo': {
-      cityName: 'Tokyo',
-      hotels: [
-        {
-          name: 'The Prince Gallery Tokyo Kioicho',
-          type: 'Luxury',
-          description: 'A luxury collection hotel offering a great mix of comfort and convenience.',
-          rating: 4.8,
-          image: '/images/hotels/tokyo-prince.jpg',
-          bookingLink: 'https://www.booking.com/hotel/jp/the-prince-gallery-tokyo-kioicho-a-luxury-collection.html'
-        },
-        {
-          name: 'The Capitol Hotel Tokyu',
-          type: 'Premium',
-          description: 'Featuring premium amenities and exceptional service.',
-          rating: 4.6,
-          image: '/images/hotels/tokyo-capitol.jpg',
-          bookingLink: '#'
-        },
-        {
-          name: 'Wise Owl Hostels River Tokyo',
-          type: 'Budget',
-          description: 'Providing basic comforts without breaking the bank.',
-          rating: 4.3,
-          image: '/images/hotels/tokyo-hostel.jpg',
-          bookingLink: '#'
-        }
       ],
-      videos: [
-        {
-          title: "Tokyo Travel Guide - Must-See Attractions",
-          thumbnail: "/images/videos/tokyo-guide.jpg",
-          url: "https://www.youtube.com/embed/hLlpWqT5G8k"
-        },
-        {
-          title: "Top 10 Things to Do in Tokyo",
-          thumbnail: "/images/videos/tokyo-things.jpg",
-          url: "https://www.youtube.com/embed/0nTO4zqEpw8"
-        }
-      ]
-    },
-    'trip-to-dubai': {
-      cityName: 'Dubai',
       hotels: [
         {
           name: 'Burj Al Arab Jumeirah',
@@ -273,95 +171,7 @@ export default function JourneyDetail() {
           url: "#"
         }
       ]
-    },
-    'trip-to-new-york': {
-      cityName: 'New York',
-      hotels: [
-        {
-          name: 'The Ritz-Carlton New York',
-          type: 'Luxury',
-          description: 'Elegant hotel offering stunning views of Central Park.',
-          rating: 4.8,
-          image: '/images/hotels/nyc-ritz.jpg',
-          bookingLink: '#'
-        },
-        {
-          name: 'The Standard High Line',
-          type: 'Boutique',
-          description: 'Trendy hotel overlooking the High Line with amazing views.',
-          rating: 4.5,
-          image: '/images/hotels/nyc-standard.jpg',
-          bookingLink: '#'
-        },
-        {
-          name: 'Pod 51 Hotel',
-          type: 'Budget',
-          description: 'Compact, modern rooms in a great Midtown location.',
-          rating: 4.2,
-          image: '/images/hotels/nyc-pod.jpg',
-          bookingLink: '#'
-        }
-      ],
-      videos: [
-        {
-          title: "New York City Travel Guide",
-          thumbnail: "/images/videos/nyc-guide.jpg",
-          url: "#"
-        },
-        {
-          title: "Hidden Gems of NYC",
-          thumbnail: "/images/videos/nyc-hidden.jpg",
-          url: "#"
-        }
-      ]
-    },
-    'trip-to-rome': {
-      cityName: 'Rome',
-      hotels: [
-        {
-          name: 'Hotel de Russie',
-          type: 'Luxury',
-          description: 'Luxury hotel with beautiful gardens near Spanish Steps.',
-          rating: 4.8,
-          image: '/images/hotels/rome-russie.jpg',
-          bookingLink: '#'
-        },
-        {
-          name: 'Hotel Artemide',
-          type: 'Premium',
-          description: 'Elegant hotel on historic Via Nazionale.',
-          rating: 4.7,
-          image: '/images/hotels/rome-artemide.jpg',
-          bookingLink: '#'
-        },
-        {
-          name: 'Generator Rome',
-          type: 'Budget',
-          description: 'Stylish hostel near Termini Station.',
-          rating: 4.3,
-          image: '/images/hotels/rome-generator.jpg',
-          bookingLink: '#'
-        }
-      ],
-      videos: [
-        {
-          title: "Rome's Ancient Wonders",
-          thumbnail: "/images/videos/rome-ancient.jpg",
-          url: "#"
-        },
-        {
-          title: "Food Tour of Rome",
-          thumbnail: "/images/videos/rome-food.jpg",
-          url: "#"
-        }
-      ]
     }
-  };
-
-  const cityData = accommodationData[journeyId] || {
-    cityName: '',
-    hotels: [],
-    videos: []
   };
 
   const itinerary = journeyData[journeyId] || {
@@ -369,7 +179,9 @@ export default function JourneyDetail() {
     title: 'Journey Not Found',
     lastUpdated: "N/A",
     image: "",
-    days: []
+    days: [],
+    hotels: [],
+    videos: []
   };
 
   return (
@@ -438,10 +250,10 @@ export default function JourneyDetail() {
       {/* Where to Stay Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-          Where to stay in {cityData.cityName}
+          Where to stay in {itinerary.cityName}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {cityData.hotels.map((hotel, index) => (
+          {itinerary.hotels.map((hotel, index) => (
             <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
               <img 
                 src={hotel.image} 
@@ -477,35 +289,13 @@ export default function JourneyDetail() {
         </div>
       </section>
 
-      {/* Booking.com Widget Section */}
-      <section className="bg-white dark:bg-gray-800 py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <img src="/images/booking-logo.png" alt="Booking.com" className="h-8" />
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Find the right stay during your trip.
-              </p>
-            </div>
-            <a
-              href={`https://booking.com/searchresults.html?city=${cityData.cityName}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
-            >
-              Find amazing hotels
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* Travel Videos Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-          Top {cityData.cityName} Travel Videos
+          Top {itinerary.cityName} Travel Videos
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {cityData.videos.map((video, index) => (
+          {itinerary.videos.map((video, index) => (
             <button
               key={index}
               onClick={() => setActiveVideo(video.url)}
