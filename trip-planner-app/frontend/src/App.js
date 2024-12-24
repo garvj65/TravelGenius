@@ -1,3 +1,4 @@
+import CreateTripForms from "./pages/CreateTripForms";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import JourneyDetail from "./components/JourneyDetail";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-trip/form" element={<CreateTripForms />} />
         </Routes>
       </Router>
     </ThemeProvider>
