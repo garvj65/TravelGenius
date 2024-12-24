@@ -6,22 +6,25 @@ import Login from "./pages/Login";
 import React from "react";
 import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { LocaleProvider } from "./context/LocaleContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/journey/:journeyId" element={<JourneyDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-trip/form" element={<CreateTripForms />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <LocaleProvider>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/journey/:journeyId" element={<JourneyDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-trip/form" element={<CreateTripForms />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </LocaleProvider>
   );
 }
 

@@ -74,6 +74,99 @@ export default function CreateTripForm() {
     }
   };
 
+  // Step 2: Itinerary Form
+  const handleItinerarySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // First, create the days
+      const { data: days, error: daysError } = await supabase
+        .from('trip_days')
+        .insert(
+          formData.days.map(day => ({
+            trip_id: formData.tripId,
+            day_number: day.dayNumber,
+            location: day.location
+          }))
+        )
+        .select();
+
+      if (daysError) throw daysError;
+
+      // Then, create activities for each day
+      for (let day of days) {
+        const dayActivities = formData.days.find(d => d.dayNumber === day.day_number).activities;
+        await supabase
+          .from('activities')
+          .insert(
+            dayActivities.map(activity => ({
+              day_id: day.id,
+              time_of_day: activity.timeOfDay,
+              title: activity.title,
+              description: activity.description
+            }))
+          );
+      }
+
+      setCurrentStep(3);
+    } catch (error) {
+      console.error('Error saving itinerary:', error);
+      alert('Failed to save itinerary');
+    }
+  };
+
+  // Add/Remove Day handlers
+  const addDay = () => {
+    setFormData(prev => ({
+      ...prev,
+      days: [
+        ...prev.days,
+        {
+          dayNumber: prev.days.length + 1,
+          location: '',
+          activities: [{ timeOfDay: 'Morning', title: '', description: '' }]
+        }
+      ]
+    }));
+  };
+
+  const removeDay = (dayIndex) => {
+    setFormData(prev => ({
+      ...prev,
+      days: prev.days.filter((_, index) => index !== dayIndex)
+    }));
+  };
+
+  // Add/Remove Activity handlers
+  const addActivity = (dayIndex) => {
+    setFormData(prev => ({
+      ...prev,
+      days: prev.days.map((day, index) => {
+        if (index === dayIndex) {
+          return {
+            ...day,
+            activities: [...day.activities, { timeOfDay: 'Morning', title: '', description: '' }]
+          };
+        }
+        return day;
+      })
+    }));
+  };
+
+  const removeActivity = (dayIndex, activityIndex) => {
+    setFormData(prev => ({
+      ...prev,
+      days: prev.days.map((day, index) => {
+        if (index === dayIndex) {
+          return {
+            ...day,
+            activities: day.activities.filter((_, aIndex) => aIndex !== activityIndex)
+          };
+        }
+        return day;
+      })
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
@@ -186,7 +279,133 @@ export default function CreateTripForm() {
           </form>
         )}
 
-        {/* Additional steps will be added here */}
+        {/* Step 2: Itinerary */}
+        {currentStep === 2 && (
+          <form onSubmit={handleItinerarySubmit} className="space-y-8">
+            {formData.days.map((day, dayIndex) => (
+              <div key={dayIndex} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold">Day {day.dayNumber}</h3>
+                  {formData.days.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeDay(dayIndex)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove Day
+                    </button>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={day.location}
+                    onChange={e => {
+                      const newDays = [...formData.days];
+                      newDays[dayIndex].location = e.target.value;
+                      setFormData(prev => ({ ...prev, days: newDays }));
+                    }}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  {day.activities.map((activity, activityIndex) => (
+                    <div key={activityIndex} className="border p-4 rounded">
+                      <div className="flex justify-between items-center mb-2">
+                        <select
+                          value={activity.timeOfDay}
+                          onChange={e => {
+                            const newDays = [...formData.days];
+                            newDays[dayIndex].activities[activityIndex].timeOfDay = e.target.value;
+                            setFormData(prev => ({ ...prev, days: newDays }));
+                          }}
+                          className="rounded-md border-gray-300"
+                        >
+                          <option>Morning</option>
+                          <option>Afternoon</option>
+                          <option>Evening</option>
+                        </select>
+                        {day.activities.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeActivity(dayIndex, activityIndex)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            Remove Activity
+                          </button>
+                        )}
+                      </div>
+
+                      <input
+                        type="text"
+                        placeholder="Activity Title"
+                        required
+                        value={activity.title}
+                        onChange={e => {
+                          const newDays = [...formData.days];
+                          newDays[dayIndex].activities[activityIndex].title = e.target.value;
+                          setFormData(prev => ({ ...prev, days: newDays }));
+                        }}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
+
+                      <textarea
+                        placeholder="Description"
+                        value={activity.description}
+                        onChange={e => {
+                          const newDays = [...formData.days];
+                          newDays[dayIndex].activities[activityIndex].description = e.target.value;
+                          setFormData(prev => ({ ...prev, days: newDays }));
+                        }}
+                        className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => addActivity(dayIndex)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    + Add Activity
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={addDay}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                + Add Day
+              </button>
+
+              <div className="space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(1)}
+                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </main>
     </div>
   );
