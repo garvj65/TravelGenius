@@ -3,6 +3,12 @@ import React, { useState } from "react";
 import supabase from "../supabase";
 import { useNavigate } from "react-router-dom";
 
+const getYouTubeVideoId = (url) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
 export default function CreateTripForm() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -248,10 +254,24 @@ export default function CreateTripForm() {
         {
           title: '',
           thumbnailUrl: '',
-          videoUrl: ''
+          videoUrl: '',
+          previewUrl: ''
         }
       ]
     }));
+  };
+
+  const handleVideoUrlChange = (index, url) => {
+    const newVideos = [...formData.videos];
+    newVideos[index].videoUrl = url;
+    
+    const videoId = getYouTubeVideoId(url);
+    if (videoId) {
+      newVideos[index].thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      newVideos[index].previewUrl = `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    setFormData(prev => ({ ...prev, videos: newVideos }));
   };
 
   const removeVideo = (index) => {
@@ -674,7 +694,8 @@ export default function CreateTripForm() {
                           newVideos[index].title = e.target.value;
                           setFormData(prev => ({ ...prev, videos: newVideos }));
                         }}
-                        className="w-full rounded-md border-gray-300"
+                        className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter video title"
                       />
                     </div>
 
@@ -684,17 +705,39 @@ export default function CreateTripForm() {
                         type="url"
                         required
                         value={video.videoUrl}
-                        onChange={e => {
-                          const newVideos = [...formData.videos];
-                          newVideos[index].videoUrl = e.target.value;
-                          setFormData(prev => ({ ...prev, videos: newVideos }));
-                        }}
-                        className="w-full rounded-md border-gray-300"
+                        onChange={e => handleVideoUrlChange(index, e.target.value)}
+                        className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter YouTube video URL"
                       />
+                      {video.videoUrl && !getYouTubeVideoId(video.videoUrl) && (
+                        <p className="text-red-500 text-sm mt-1">
+                          Please enter a valid YouTube URL
+                        </p>
+                      )}
                     </div>
 
+                    {/* Video Preview */}
+                    {video.previewUrl && (
+                      <div className="aspect-w-16 aspect-h-9 mt-4">
+                        <iframe
+                          src={video.previewUrl}
+                          title={video.title}
+                          className="w-full h-full rounded-lg"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    )}
+
                     <div>
-                      <label className="block text-sm font-medium mb-1">Thumbnail URL</label>
+                      <label className="block text-sm font-medium mb-1">
+                        Thumbnail URL 
+                        {getYouTubeVideoId(video.videoUrl) && (
+                          <span className="text-gray-500 text-xs ml-2">
+                            (Auto-generated from YouTube)
+                          </span>
+                        )}
+                      </label>
                       <input
                         type="url"
                         value={video.thumbnailUrl}
@@ -703,9 +746,26 @@ export default function CreateTripForm() {
                           newVideos[index].thumbnailUrl = e.target.value;
                           setFormData(prev => ({ ...prev, videos: newVideos }));
                         }}
-                        className="w-full rounded-md border-gray-300"
+                        className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Enter thumbnail URL (optional for YouTube videos)"
+                        disabled={getYouTubeVideoId(video.videoUrl)}
                       />
                     </div>
+
+                    {/* Thumbnail Preview */}
+                    {video.thumbnailUrl && (
+                      <div className="mt-2">
+                        <img
+                          src={video.thumbnailUrl}
+                          alt={video.title}
+                          className="w-full max-w-md rounded-lg shadow"
+                          onError={(e) => {
+                            e.target.src = '/placeholder-thumbnail.jpg';
+                            e.target.onerror = null;
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -713,23 +773,26 @@ export default function CreateTripForm() {
               <button
                 type="button"
                 onClick={addVideo}
-                className="text-blue-500 hover:text-blue-700"
+                className="inline-flex items-center text-blue-500 hover:text-blue-700"
               >
-                + Add Another Video
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Another Video
               </button>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-8">
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
               >
                 Previous
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
               >
                 Finish
               </button>
