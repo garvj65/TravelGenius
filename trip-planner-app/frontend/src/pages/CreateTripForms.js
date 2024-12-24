@@ -167,6 +167,100 @@ export default function CreateTripForm() {
     }));
   };
 
+  // Step 3: Hotels/Accommodations handlers
+  const handleAccommodationsSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await supabase
+        .from('hotels')
+        .insert(
+          formData.hotels.map(hotel => ({
+            trip_id: formData.tripId,
+            name: hotel.name,
+            type: hotel.type,
+            description: hotel.description,
+            rating: hotel.rating,
+            image_url: hotel.imageUrl,
+            booking_link: hotel.bookingLink
+          }))
+        );
+
+      setCurrentStep(4);
+    } catch (error) {
+      console.error('Error saving accommodations:', error);
+      alert('Failed to save accommodations');
+    }
+  };
+
+  // Step 4: Media handlers
+  const handleMediaSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await supabase
+        .from('trip_videos')
+        .insert(
+          formData.videos.map(video => ({
+            trip_id: formData.tripId,
+            title: video.title,
+            thumbnail_url: video.thumbnailUrl,
+            video_url: video.videoUrl
+          }))
+        );
+
+      navigate(`/journey/${formData.tripId}`);
+    } catch (error) {
+      console.error('Error saving media:', error);
+      alert('Failed to save media');
+    }
+  };
+
+  // Hotel handlers
+  const addHotel = () => {
+    setFormData(prev => ({
+      ...prev,
+      hotels: [
+        ...prev.hotels,
+        {
+          name: '',
+          type: 'Luxury',
+          description: '',
+          rating: 5.0,
+          imageUrl: '',
+          bookingLink: ''
+        }
+      ]
+    }));
+  };
+
+  const removeHotel = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      hotels: prev.hotels.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Video handlers
+  const addVideo = () => {
+    setFormData(prev => ({
+      ...prev,
+      videos: [
+        ...prev.videos,
+        {
+          title: '',
+          thumbnailUrl: '',
+          videoUrl: ''
+        }
+      ]
+    }));
+  };
+
+  const removeVideo = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      videos: prev.videos.filter((_, i) => i !== index)
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
@@ -403,6 +497,242 @@ export default function CreateTripForm() {
                   Next
                 </button>
               </div>
+            </div>
+          </form>
+        )}
+
+        {/* Step 3: Accommodations */}
+        {currentStep === 3 && (
+          <form onSubmit={handleAccommodationsSubmit} className="space-y-6">
+            <div className="space-y-6">
+              {formData.hotels.map((hotel, index) => (
+                <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">Hotel {index + 1}</h3>
+                    {formData.hotels.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeHotel(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Remove Hotel
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Hotel Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={hotel.name}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].name = e.target.value;
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Type</label>
+                      <select
+                        value={hotel.type}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].type = e.target.value;
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      >
+                        <option>Luxury</option>
+                        <option>Premium</option>
+                        <option>Mid-Range</option>
+                        <option>Budget</option>
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium mb-1">Description</label>
+                      <textarea
+                        value={hotel.description}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].description = e.target.value;
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Rating</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        step="0.1"
+                        value={hotel.rating}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].rating = parseFloat(e.target.value);
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Image URL</label>
+                      <input
+                        type="url"
+                        value={hotel.imageUrl}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].imageUrl = e.target.value;
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium mb-1">Booking Link</label>
+                      <input
+                        type="url"
+                        value={hotel.bookingLink}
+                        onChange={e => {
+                          const newHotels = [...formData.hotels];
+                          newHotels[index].bookingLink = e.target.value;
+                          setFormData(prev => ({ ...prev, hotels: newHotels }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addHotel}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                + Add Another Hotel
+              </button>
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(2)}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Previous
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Next
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Step 4: Media */}
+        {currentStep === 4 && (
+          <form onSubmit={handleMediaSubmit} className="space-y-6">
+            <div className="space-y-6">
+              {formData.videos.map((video, index) => (
+                <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">Video {index + 1}</h3>
+                    {formData.videos.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeVideo(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Remove Video
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Title</label>
+                      <input
+                        type="text"
+                        required
+                        value={video.title}
+                        onChange={e => {
+                          const newVideos = [...formData.videos];
+                          newVideos[index].title = e.target.value;
+                          setFormData(prev => ({ ...prev, videos: newVideos }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Video URL</label>
+                      <input
+                        type="url"
+                        required
+                        value={video.videoUrl}
+                        onChange={e => {
+                          const newVideos = [...formData.videos];
+                          newVideos[index].videoUrl = e.target.value;
+                          setFormData(prev => ({ ...prev, videos: newVideos }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Thumbnail URL</label>
+                      <input
+                        type="url"
+                        value={video.thumbnailUrl}
+                        onChange={e => {
+                          const newVideos = [...formData.videos];
+                          newVideos[index].thumbnailUrl = e.target.value;
+                          setFormData(prev => ({ ...prev, videos: newVideos }));
+                        }}
+                        className="w-full rounded-md border-gray-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addVideo}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                + Add Another Video
+              </button>
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Previous
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Finish
+              </button>
             </div>
           </form>
         )}
