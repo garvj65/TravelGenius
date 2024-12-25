@@ -2,11 +2,11 @@ import CreateTripForms from "./pages/CreateTripForms";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import JourneyDetail from "./components/JourneyDetail";
-import Login from "./pages/Login";
 import React from "react";
 import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
+import { Login } from "./pages/Login";
 
 function App() {
   return (

@@ -1,16 +1,11 @@
 {
-  "name": "backend",
+  "name": "trip-planner-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.47.10",
     "cors": "^2.8.5",
