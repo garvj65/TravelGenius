@@ -7,12 +7,18 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.x.x",
+    "@supabase/supabase-js": "^2.47.10",
     "cors": "^2.8.5",
-    "dotenv": "^16.x.x",
-    "express": "^4.x.x"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^4.77.0"
   },
   "devDependencies": {
-    "nodemon": "^2.x.x"
-  }
+    "nodemon": "^2.0.22"
+  },
+  "main": "app.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
