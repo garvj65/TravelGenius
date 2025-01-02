@@ -63,7 +63,7 @@ export default function Dashboard() {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Plan your trip step by step using our intuitive form interface.
             </p>
-            <span className="text-blue-500 hover:text-blue-600">
+            <span className="text-blue-500 hover:text-blue-700">
               Get Started →
             </span>
           </Link>
@@ -106,7 +106,7 @@ export default function Dashboard() {
                       alt={trip.title} 
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-white text-center p-4">
                         <p className="font-semibold mb-2">{trip.duration}</p>
                         <p className="text-sm mb-2">{trip.description}</p>
