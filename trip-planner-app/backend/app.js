@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to the Trip Planner API' });
+    res.json({ message: 'Welcome to the Travel Planner API' });
 });
 
 app.get('/test-supabase', async (req, res) => {
