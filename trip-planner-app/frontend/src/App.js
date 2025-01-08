@@ -1,3 +1,4 @@
+import  ChatInterface  from "./components/ChatInterface";
 import CreateTripForms from "./pages/CreateTripForms";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-trip/form" element={<CreateTripForms />} />
+            <Route path="/create-trip/chat" element={<ChatInterface />} />
           </Routes>
         </Router>
       </ThemeProvider>
