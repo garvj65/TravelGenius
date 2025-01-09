@@ -1,33 +1,51 @@
-import authRoutes from "./routes/authRoutes.js";
-import chatRoutes from "./routes/chatRoutes.js";
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
-import tripRoutes from "./routes/tripRoutes.js";
-import { supabase } from "./config/supabase.js";
+import express, { json } from "express";
 
 dotenv.config();
 
+
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(json());
 
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to the Travel Planner API' });
+});
 
+app.get('/test-supabase', async (req, res) => {
+    try {
+        // First, let's list all tables
+        const { data: tables, error: tablesError } = await from('_tables')
+            .select('*');
+        
+        console.log('Available tables:', tables);
 
-// Routes
-app.use('/api/trips', tripRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/chat', chatRoutes);
+        // Then try to query your users table
+        const { data, error } = await from('users')  // Make sure this matches your table name exactly
+            .select('*');
+        
+        console.log('Query response:', { data, error });
 
-// Error handling middleware
+        if (error) throw error;
+        
+        res.json({
+            message: 'Query successful',
+            tables: tables, // This will show available tables
+            rowCount: data ? data.length : 0,
+            data: data
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
