@@ -1,62 +1,170 @@
+import  get  from "axios";
+import OpenAI from "openai";
 import cors from "cors";
-import dotenv from "dotenv";
 import express, { json } from "express";
-import { generateTripSuggestion } from "./controllers/chatController.js";
+import { createClient } from "@supabase/supabase-js";
+import { config } from "dotenv";
 
-// Import dependencies
+// backend/server.js
 
-// Load environment variables
-dotenv.config();
-console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
+config();
 
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  console.error("Error: OPENAI_API_KEY is not defined in the environment variables.");
-  process.exit(1); // Exit the process if the API key is missing
-}
+// Initialize OpenAI
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  
+
+// Initialize Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 
 const app = express();
-
-// Middleware setup
 app.use(cors());
 app.use(json());
 
-// Define routes
-app.post("/api/generate-trip", generateTripSuggestion);
+// System prompt for travel assistant
+const SYSTEM_PROMPT = `You are a knowledgeable travel assistant. Help users plan their trips by providing detailed itineraries, 
+recommendations, and handling flight bookings. Be specific with time slots, places to visit, and practical travel advice. 
+When suggesting activities, include estimated times and costs when possible.`;
 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the Travel Planner API" });
+class TravelAPI {
+    async generateItinerary(userInput, conversationHistory = []) {
+        try {
+            const messages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...conversationHistory,
+                { role: 'user', content: userInput }
+            ];
+
+            const response = await openai.createChatCompletion({
+                model: "gpt-3.5-turbo",
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 500
+            });
+
+            // Store conversation in Supabase
+            await this.saveConversation(userInput, response.data.choices[0].message.content);
+
+            return {
+                message: response.data.choices[0].message.content,
+                conversation_id: Date.now() // You might want to generate this differently
+            };
+        } catch (error) {
+            console.error('Error generating itinerary:', error);
+            throw error;
+        }
+    }
+
+    async saveConversation(userMessage, aiResponse) {
+        try {
+            const { data, error } = await supabase
+                .from('conversations')
+                .insert([
+                    {
+                        user_message: userMessage,
+                        ai_response: aiResponse,
+                        timestamp: new Date().toISOString()
+                    }
+                ]);
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error saving to Supabase:', error);
+            throw error;
+        }
+    }
+
+    async getConversationHistory() {
+        try {
+            const { data, error } = await supabase
+                .from('conversations')
+                .select('*')
+                .order('timestamp', { ascending: false })
+                .limit(10);
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error fetching conversation history:', error);
+            throw error;
+        }
+    }
+
+    async searchFlights(origin, destination, date) {
+        // Keep existing flight search logic
+        // Add flight search results to Supabase
+        try {
+            const response = await get(
+                `https://test.api.amadeus.com/v2/shopping/flight-offers`,
+                {
+                    headers: { Authorization: `Bearer ${process.env.AMADEUS_TOKEN}` },
+                    params: {
+                        originLocationCode: origin,
+                        destinationLocationCode: destination,
+                        departureDate: date,
+                        adults: 1
+                    }
+                }
+            );
+
+            // Store flight search results
+            await supabase
+                .from('flight_searches')
+                .insert([
+                    {
+                        origin,
+                        destination,
+                        date,
+                        results: response.data,
+                        timestamp: new Date().toISOString()
+                    }
+                ]);
+
+            return response.data;
+        } catch (error) {
+            console.error('Error searching flights:', error);
+            throw error;
+        }
+    }
+}
+
+const travelAPI = new TravelAPI();
+
+// API Endpoints
+app.post('/api/itinerary', async (req, res) => {
+    try {
+        const response = await travelAPI.generateItinerary(req.body.prompt, req.body.conversationHistory);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to generate itinerary' });
+    }
 });
 
-app.get("/test-supabase", async (req, res) => {
-  try {
-    // Example Supabase query
-    const { data: tables, error: tablesError } = await from("_tables").select("*");
-    if (tablesError) throw tablesError;
-
-    const { data, error } = await from("users").select("*"); // Replace "users" with your actual table name
-    if (error) throw error;
-
-    res.json({
-      message: "Query successful",
-      tables: tables, // List available tables
-      rowCount: data.length,
-      data: data, // Query result
-    });
-  } catch (error) {
-    console.error("Error during Supabase query:", error);
-    res.status(500).json({ error: error.message });
-  }
+app.get('/api/conversations', async (req, res) => {
+    try {
+        const history = await travelAPI.getConversationHistory();
+        res.json(history);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch conversation history' });
+    }
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error("Error:", err.stack);
-  res.status(500).json({ error: "Something went wrong. Please try again later." });
+app.post('/api/flights', async (req, res) => {
+    try {
+        const { origin, destination, date } = req.body;
+        const response = await travelAPI.searchFlights(origin, destination, date);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to search flights' });
+    }
 });
 
-// Start the server
-const PORT = process.env.PORT || 5000; // Default to port 5000 if not specified
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
