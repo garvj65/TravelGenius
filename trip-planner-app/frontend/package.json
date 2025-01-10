@@ -6,6 +6,8 @@
     "@clerk/clerk-react": "^5.21.0",
     "@supabase/supabase-js": "^2.47.10",
     "axios": "^1.7.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "cra-template": "1.2.0",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.469.0",
@@ -13,6 +15,9 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.0",
     "react-scripts": "5.0.1",
+    "shadcn": "^2.1.8",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
     "web-vitals": "^4.2.4"
   },
   "scripts": {

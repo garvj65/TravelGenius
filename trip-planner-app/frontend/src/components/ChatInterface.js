@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -44,6 +45,18 @@ const ChatInterface = () => {
 
   return (
     <div className="flex flex-col h-screen max-w-4xl mx-auto p-4">
+      <Link to="/" className="flex items-center gap-2">
+          <svg 
+            className="w-8 h-8 text-green-500" 
+            viewBox="0 0 24 24" 
+            fill="currentColor"
+          >
+            <path d="M12 2L2 8l10 6 10-6-10-6zM2 15l10 6 10-6M2 19l10 6 10-6"/>
+          </svg>
+          <span className="text-2xl font-bold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
+            TravelGenius
+          </span>
+        </Link>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -95,6 +108,9 @@ const ChatInterface = () => {
       </svg>
         </button>
       </form>
+      <footer className="text-center text-gray-500 text-sm mt-2">
+        Powered by OpenAI's GPT-3
+      </footer>
     </div>
   );
 };
