@@ -30,6 +30,29 @@ const SYSTEM_PROMPT = `You are a knowledgeable travel assistant. Help users plan
 recommendations, and handling flight bookings. Be specific with time slots, places to visit, and practical travel advice. 
 When suggesting activities, include estimated times and costs when possible.`;
 
+// Add authentication middleware
+const authenticateUser = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error) throw error;
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+// Protected routes
+app.use('/api/itinerary', authenticateUser);
+app.use('/api/conversations', authenticateUser);
+app.use('/api/flights', authenticateUser);
+
 class TravelAPI {
     async generateItinerary(userInput, conversationHistory = []) {
         try {

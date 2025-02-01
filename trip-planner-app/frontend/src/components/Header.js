@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import { useLocale } from "../context/LocaleContext";
 import { useTheme } from "../context/ThemeContext";
@@ -16,6 +17,7 @@ export default function Header() {
     changeCurrency
   } = useLocale();
   const [activeTab, setActiveTab] = useState('currency'); // 'currency' or 'language'
+  const { isSignedIn, user } = useUser();
 
   return (
     <header className="w-full bg-white dark:bg-gray-800 shadow-md transition-all duration-300">
@@ -155,9 +157,30 @@ export default function Header() {
       {/* Menu Dropdown */}
       {showMenu && (
         <div className="absolute right-4 top-16 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-40">
-          <Link to="/login" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-            Login
-          </Link>
+          {isSignedIn ? (
+            <>
+              <Link 
+                to="/dashboard" 
+                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Dashboard
+              </Link>
+              <Link 
+                to="/create-trip/chat" 
+                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Plan Trip
+              </Link>
+              <UserButton afterSignOutUrl="/" />
+            </>
+          ) : (
+            <Link 
+              to="/sign-in" 
+              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Sign In
+            </Link>
+          )}
           <Link to="/settings" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
             Settings
           </Link>

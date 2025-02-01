@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import supabase from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
+import { tripService } from "../services/api";
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -12,56 +14,67 @@ const ChatBot = () => {
   });
   const [flights, setFlights] = useState([]);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const { user } = useAuth();
+  const [context, setContext] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   // Fetch conversation history on component mount
   useEffect(() => {
-    fetchConversationHistory();
+    loadConversationHistory();
   }, []);
 
-  const fetchConversationHistory = async () => {
+  const loadConversationHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/chats');
-      setConversationHistory(response.data);
+      const history = await tripService.getConversations();
+      setMessages(history.map(conv => ({
+        user: conv.user_message,
+        ai: conv.ai_response
+      })));
     } catch (error) {
-      console.error('Error fetching conversation history:', error);
+      console.error('Error loading history:', error);
     }
   };
 
-  const handleSendMessage = async () => {
+  const handleContextChange = (e) => {
+    setContext(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!input.trim()) return;
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/itinerary', {
-        prompt: input,
-        conversationHistory: messages.map(msg => ({
-          role: msg.type === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        }))
-      });
+      const fullPrompt = context 
+        ? `Context: ${context}\nUser Query: ${input}`
+        : input;
 
-      const newMessages = [
-        ...messages,
-        { type: 'user', content: input },
-        { type: 'assistant', content: response.data.message }
-      ];
+      const response = await tripService.generateItinerary(fullPrompt, messages);
       
-      setMessages(newMessages);
-      
-      // Update conversation history
-      await fetchConversationHistory();
-      
+      // Store in Supabase if user is authenticated
+      if (user) {
+        await supabase
+          .from('conversations')
+          .insert([{
+            user_id: user.id,
+            user_message: input,
+            ai_response: response.message,
+            context: context || null
+          }]);
+      }
+
+      setMessages([...messages, { user: input, ai: response.message }]);
+      setInput('');
     } catch (error) {
       console.error('Error:', error);
     } finally {
       setLoading(false);
-      setInput('');
     }
   };
 
   const handleFlightSearch = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/flights', flightDetails);
+      const response = await tripService.searchFlights(flightDetails.origin, flightDetails.destination, flightDetails.date);
       setFlights(response.data.data || []);
     } catch (error) {
       console.error('Error:', error);
@@ -75,35 +88,36 @@ const ChatBot = () => {
         <div className="bg-white rounded-lg shadow-lg p-4">
           <div className="font-bold text-xl mb-4">Sinbad TravelThinker</div>
           <div className="h-96 overflow-y-auto mb-4 space-y-4 border-b border-gray-200">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`p-3 rounded-lg ${
-                  message.type === 'user'
-                    ? 'bg-blue-100 ml-auto max-w-[80%]'
-                    : 'bg-gray-100 max-w-[80%]'
-                }`}
-              >
-                {message.content}
+            {messages.map((msg, idx) => (
+              <div key={idx}>
+                <div className="bg-blue-100 p-3 rounded-lg mb-2">
+                  <p className="font-semibold">You:</p>
+                  <p>{msg.user}</p>
+                </div>
+                <div className="bg-gray-100 p-3 rounded-lg">
+                  <p className="font-semibold">Assistant:</p>
+                  <p>{msg.ai}</p>
+                </div>
               </div>
             ))}
           </div>
-          <div className="flex gap-2">
-            <textarea
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about travel plans, itineraries, or flight bookings..."
-              className="flex-1 p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows="3"
+              placeholder="Ask about your trip..."
+              className="flex-1 p-2 border rounded"
+              disabled={loading}
             />
             <button
-              onClick={handleSendMessage}
+              type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
             >
-              {loading ? 'Sending...' : 'Send'}
+              {loading ? 'Thinking...' : 'Send'}
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Flight Search Section */}

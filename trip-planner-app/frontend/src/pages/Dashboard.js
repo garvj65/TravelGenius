@@ -1,5 +1,4 @@
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -43,8 +42,8 @@ export default function Dashboard() {
   }, [fetchTrips]);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-all duration-300">
-      <Header />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
