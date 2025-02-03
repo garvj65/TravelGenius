@@ -1,17 +1,20 @@
 import  get  from "axios";
 import OpenAI from "openai";
+import conversationRoutes from "./routes/conversationRoutes.js";
 import cors from "cors";
 import express, { json } from "express";
+import tripRoutes from "./routes/tripRoutes.js";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
 import { createServer } from "http";
 import { conversationController } from "./controllers/conversationController.js";
 import { tripController } from "./controllers/tripController.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 import { initializeWebSocket } from "./websocket/socket.js";
 
 // backend/server.js
 
-dotenv.config();
+config();
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -172,6 +175,14 @@ app.post('/api/flights', async (req, res) => {
     }
 });
 
-server.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
+// Define routes
+app.use('/api/trips', tripRoutes);
+app.use('/api/conversations', conversationRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

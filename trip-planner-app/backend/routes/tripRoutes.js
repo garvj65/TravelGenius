@@ -1,14 +1,13 @@
 import express from "express";
 import { tripController } from "../controllers/tripController.js";
-import { authenticateUser } from "../middleware/auth.js";
+import { authenticate } from "../middleware/auth.js";
 
 const router = express.Router()
 
-router.use(authenticateUser); // Protect all trip routes
-
-router.post('/', tripController.createTrip)
-router.get('/user/:user_id', tripController.getUserTrips)
-router.get('/:id', tripController.getTrip)
+router.post('/', authenticate, tripController.createTrip)
+router.get('/', authenticate, tripController.getUserTrips)
+router.get('/:tripId', authenticate, tripController.getTrip)
+router.post('/:tripId/generate-itinerary', authenticate, tripController.generateItinerary)
 router.put('/:id', tripController.updateTrip)
 router.delete('/:id', tripController.deleteTrip)
 // Add more routes as needed

@@ -1,5 +1,6 @@
-import  openai  from "../lib/openai.js";
+import openai from "../lib/openai.js";
 import prisma from "../lib/prisma.js";
+import { groqClient } from "../lib/groq.js";
 
 export const tripController = {
   // Create a new trip
@@ -117,27 +118,23 @@ export const tripController = {
         where: { id: tripId }
       });
 
-      const prompt = `Create a detailed daily itinerary for a trip to ${trip.destination} 
-        from ${trip.startDate} to ${trip.endDate}. Budget: ${trip.budget}`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are a travel planner." },
-          { role: "user", content: prompt }
-        ]
+      // Prepare the request to GROQ API
+      const response = await groqClient.post('/generate-itinerary', {
+        destination: trip.destination,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
+        budget: trip.budget,
       });
 
-      const itinerary = completion.choices[0].message.content;
+      const itinerary = response.data.itinerary; // Adjust based on GROQ API response structure
 
       // Store the conversation
       await prisma.conversation.create({
         data: {
           userId: trip.userId,
           tripId,
-          prompt,
+          prompt: `Generate itinerary for ${trip.destination}`,
           response: itinerary,
-          tripContext: `Generating itinerary for ${trip.destination}`
         }
       });
 

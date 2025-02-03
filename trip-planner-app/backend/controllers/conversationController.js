@@ -1,5 +1,5 @@
-import  openai  from "../lib/openai.js";
 import prisma from "../lib/prisma.js";
+import { groqClient } from "../lib/groq.js";
 import { websocket } from "../server.js";
 
 const SYSTEM_PROMPT = `You are a knowledgeable travel assistant. Help users plan their trips by providing:
@@ -15,27 +15,13 @@ export const conversationController = {
       const { tripId, message } = req.body;
       const userId = req.auth.userId;
 
-      // Get trip context if tripId is provided
-      let tripContext = '';
-      if (tripId) {
-        const trip = await prisma.trip.findUnique({
-          where: { id: tripId }
-        });
-        tripContext = `Trip to ${trip.destination} from ${trip.startDate} to ${trip.endDate}. Budget: $${trip.budget}`;
-      }
-
-      // Generate AI response
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: `Context: ${tripContext}\nQuestion: ${message}` }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
+      // Prepare the request to GROQ API
+      const response = await groqClient.post('/generate-response', {
+        prompt: message,
+        tripId: tripId,
       });
 
-      const aiResponse = completion.choices[0].message.content;
+      const aiResponse = response.data.response; // Adjust based on GROQ API response structure
 
       // Store conversation in database
       const conversation = await prisma.conversation.create({
@@ -44,7 +30,6 @@ export const conversationController = {
           tripId,
           prompt: message,
           response: aiResponse,
-          tripContext
         }
       });
 
