@@ -4,10 +4,14 @@ import cors from "cors";
 import express, { json } from "express";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
+import { createServer } from "http";
+import { conversationController } from "./controllers/conversationController.js";
+import { tripController } from "./controllers/tripController.js";
+import { initializeWebSocket } from "./websocket/socket.js";
 
 // backend/server.js
 
-config();
+dotenv.config();
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -22,6 +26,10 @@ const supabase = createClient(
 );
 
 const app = express();
+const server = createServer(app);
+
+export const websocket = initializeWebSocket(server);
+
 app.use(cors());
 app.use(json());
 
@@ -164,7 +172,6 @@ app.post('/api/flights', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+server.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
 });
